@@ -1,24 +1,21 @@
+import { UniquePayload } from 'types/user.types';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/entity/user.entity';
+import { CreateUserDto } from '../dto';
+import { User } from '../entity';
 import { config } from 'src/config/app.config';
 import * as bcrypt from 'bcrypt';
-
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  private async isUnique(params: {
-    username?: string;
-    email?: string;
-  }): Promise<boolean> {
-    for (const key in params) {
-      if (params.hasOwnProperty(key)) {
-        const value = params[key];
+  private async isUnique(payload: Partial<UniquePayload>): Promise<boolean> {
+    for (const key in payload) {
+      if (payload.hasOwnProperty(key)) {
+        const value = payload[key];
         const user = await this.userRepository.findOne({
           where: {
             [key]: value,
@@ -59,8 +56,9 @@ export class UserService {
     });
   }
 
-  async remove(username: string): Promise<void> {
+  async remove(username: string): Promise<boolean> {
     await this.userRepository.delete({ username: username });
+    return true
   }
 
   async update(username: string, createUserDto: CreateUserDto): Promise<User> {
