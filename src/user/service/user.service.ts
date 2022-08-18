@@ -1,4 +1,4 @@
-import { Role } from 'types/role.enum';
+import { Role } from 'types/enum/role.enum';
 import { UniquePayload } from 'types/user.types';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +30,12 @@ export class UserService {
     return true;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  private async hashPassword(password: string): Promise<string> {
+    const hash = await bcrypt.hash(password, config.saltRounds);
+    return hash;
+  }
+
+  public async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
     user.name = createUserDto.name;
     user.email = createUserDto.email;
@@ -114,10 +119,5 @@ export class UserService {
       }
     }
     return await this.userRepository.save<User>(user);
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    const hash = await bcrypt.hash(password, config.saltRounds);
-    return hash;
   }
 }

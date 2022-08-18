@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { toString } from './swagger/theme/index';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .setTitle('User Management')
     .setDescription('API for managing users')
-    .setVersion('0.0.5')
+    .setVersion('0.0.6')
     .addTag('Auth')
     .addTag('User')
     .addTag('Admin')
@@ -23,7 +24,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
     customSiteTitle: 'User Management',
-    customCss: '.swagger-ui .topbar { display: none; }',
+    customCss: toString('dark'),
   });
   await app.listen(process.env.PORT || 3000);
 }

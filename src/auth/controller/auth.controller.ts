@@ -12,13 +12,13 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
-  async login(@Body() credentials: Credentials): Promise<Authorization> {
+  public async login(@Body() credentials: Credentials): Promise<Authorization> {
     const user = await this.authService.login(credentials);
     return user;
   }
 
   @Post('/register')
-  async register(@Body() createUser: CreateUser): Promise<Authorization> {
+  public async register(@Body() createUser: CreateUser): Promise<Authorization> {
     const user = await this.authService.register(createUser);
     return user;
   }

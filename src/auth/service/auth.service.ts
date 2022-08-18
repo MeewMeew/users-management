@@ -17,13 +17,13 @@ export class AuthService {
     private readonly usersService: UserService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User> {
+  public async validateUser(username: string, password: string): Promise<User> {
     const user = await this.usersService.findOne(username);
     if (user && (await bcrypt.compare(password, user.password))) return user;
     return null;
   }
 
-  async sign(user: User): Promise<Authorization> {
+  public async sign(user: User): Promise<Authorization> {
     const payload = { username: user.username, sub: user.id };
     const access_token = await this.jwtService.signAsync(payload, {
       secret: config.jwtSecret,
@@ -32,7 +32,7 @@ export class AuthService {
     return { access_token: access_token };
   }
 
-  async login(credentials: Credentials): Promise<Authorization> {
+  public async login(credentials: Credentials): Promise<Authorization> {
     const user = await this.validateUser(
       credentials.username,
       credentials.password,
@@ -41,7 +41,7 @@ export class AuthService {
     return await this.sign(user);
   }
 
-  async register(user: User): Promise<Authorization> {
+  public async register(user: User): Promise<Authorization> {
     const existingUser = await this.validateUser(user.username, user.password);
     if (existingUser)
       throw new HttpException('Email or username already exists.', 409);
