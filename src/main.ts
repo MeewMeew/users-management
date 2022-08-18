@@ -10,6 +10,7 @@ async function bootstrap() {
     .setVersion('0.0.3')
     .addTag('Auth')
     .addTag('User')
+    .addTag('Admin')
     .addBearerAuth(
       {
         type: 'http',
@@ -20,7 +21,10 @@ async function bootstrap() {
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'User Management',
+    customCss: '.swagger-ui .topbar { display: none; }',
+  });
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

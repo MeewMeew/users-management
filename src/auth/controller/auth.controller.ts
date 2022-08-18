@@ -1,6 +1,6 @@
 import { Authorization } from 'types/auth.types';
 import { Controller, Post, UseGuards, Body } from '@nestjs/common';
-import { LocalAuthGuard } from '../local/local-auth.guard';
+import { LocalAuthGuard } from '../guard/local-auth.guard';
 import { AuthService } from '../service/auth.service';
 import { CreateUser, Credentials } from 'src/swagger/auth.swagger';
 import { ApiTags } from '@nestjs/swagger';

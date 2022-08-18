@@ -1,3 +1,4 @@
+import { Role } from 'types/role.enum';
 import { UniquePayload } from 'types/user.types';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +7,8 @@ import { User } from '../entity/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { config } from 'src/config/app.config';
 import * as bcrypt from 'bcrypt';
+import { FindAllOptions, FindAllResponse } from 'types/user.types';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -40,15 +43,32 @@ export class UserService {
       throw new HttpException('Email or username already exists.', 409);
     const hash = await this.hashPassword(createUserDto.password);
     user.password = hash;
+    user.role = Role.USER;
     const save = await this.userRepository.save(user);
     return save;
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  public async findAll(
+    options: Partial<FindAllOptions>,
+  ): Promise<FindAllResponse> {
+    options.limit = Number(options.limit) || config.defaultFindAllOptions.limit;
+    options.page = Number(options.page) || config.defaultFindAllOptions.page;
+    const skip = options.limit * options.page - options.limit;
+    const data = await this.userRepository
+      .createQueryBuilder('user')
+      .skip(skip)
+      .take(options.limit)
+      .where(`user.${options.key} like :name`, { name: `%${options.search}%` })
+      .orderBy(`user.${options.key}`, options.sort === 'DESC' ? 'DESC' : 'ASC')
+      .getMany();
+
+    return {
+      data,
+      total: data.length,
+    };
   }
 
-  async findOne(username: string): Promise<User> {
+  public async findOne(username: string): Promise<User> {
     return await this.userRepository.findOne({
       where: {
         username: username,
@@ -56,12 +76,15 @@ export class UserService {
     });
   }
 
-  async remove(username: string): Promise<boolean> {
+  public async remove(username: string): Promise<boolean> {
     await this.userRepository.delete({ username: username });
     return true;
   }
 
-  async update(username: string, createUserDto: CreateUserDto): Promise<User> {
+  public async update(
+    username: string,
+    createUserDto: CreateUserDto,
+  ): Promise<User> {
     const user = await this.userRepository.findOne({
       where: {
         username: username,
@@ -80,6 +103,9 @@ export class UserService {
             if (!unique)
               throw new HttpException('Email or username already exists.', 409);
             user[key] = createUserDto[key];
+            break;
+          case 'role':
+            user[key] = Role.USER;
             break;
           default:
             user[key] = createUserDto[key];

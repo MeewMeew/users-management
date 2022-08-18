@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # Database
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal

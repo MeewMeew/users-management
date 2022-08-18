@@ -1,6 +1,6 @@
 import { User } from '../entity/user.entity';
 import { UserService } from '../service/user.service';
-import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Controller, Get, Post, UseGuards, Req, Body } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -11,9 +11,12 @@ import {
 } from '@nestjs/swagger';
 import { UpdateUser } from 'src/swagger/user.swagger';
 import { Request } from 'express';
+import { Roles } from 'src/role/decorator/role.decorator';
+import { Role } from 'types/role.enum';
 
 @ApiTags('User')
 @UseGuards(JwtAuthGuard)
+@Roles(Role.USER)
 @Controller('api/user')
 @ApiBearerAuth('Authorization')
 @ApiOkResponse({ description: 'Success' })

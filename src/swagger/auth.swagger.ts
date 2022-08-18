@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 
 export class CreateUser {
+  @ApiHideProperty()
   id: number;
 
   @ApiProperty()
@@ -14,6 +15,9 @@ export class CreateUser {
 
   @ApiProperty()
   password: string;
+
+  @ApiHideProperty()
+  role: string;
 }
 
 export class Credentials {

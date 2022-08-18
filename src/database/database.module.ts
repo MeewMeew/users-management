@@ -9,6 +9,8 @@ import { User } from 'src/user/entity/user.entity';
       database: 'users-db.sqlite',
       entities: [User],
       synchronize: true,
+      busyErrorRetry: 100,
+      enableWAL: true,
     }),
   ],
 })
