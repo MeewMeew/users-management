@@ -33,7 +33,10 @@ export class AuthService {
   }
 
   async login(credentials: Credentials): Promise<Authorization> {
-    const user = await this.validateUser(credentials.username, credentials.password);
+    const user = await this.validateUser(
+      credentials.username,
+      credentials.password,
+    );
     if (!user) throw new UnauthorizedException();
     return await this.sign(user);
   }

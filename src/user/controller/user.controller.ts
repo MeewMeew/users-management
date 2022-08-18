@@ -1,30 +1,44 @@
 import { User } from '../entity/user.entity';
 import { UserService } from '../service/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
-import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Req, Body } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  ApiOkResponse,
+  ApiForbiddenResponse,
+} from '@nestjs/swagger';
+import { UpdateUser } from 'src/swagger/user.swagger';
+import { Request } from 'express';
 
+@ApiTags('User')
+@UseGuards(JwtAuthGuard)
 @Controller('api/user')
+@ApiBearerAuth('Authorization')
+@ApiOkResponse({ description: 'Success' })
+@ApiForbiddenResponse({ description: 'Forbidden' })
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class UserController {
-  constructor(private readonly usersService: UserService) { }
+  constructor(private readonly usersService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('/profile')
-  async getInfo(@Request() req: any): Promise<User> {
+  async getInfo(@Req() req: Request): Promise<User> {
     return <User>req.user;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/update')
-  async updateInfo(@Request() req: any): Promise<User> {
-    const user = <CreateUserDto>req.user;
-    return await this.usersService.update(user.username, req.body);
+  async updateInfo(
+    @Body() updateUser: UpdateUser,
+    @Req() req: Request,
+  ): Promise<User> {
+    const user = <User>req.user;
+    return await this.usersService.update(user.username, <User>updateUser);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/delete')
-  async deleteUser(@Request() req: any): Promise<boolean> {
-    const user = <CreateUserDto>req.user;
+  async deleteUser(@Req() req: Request): Promise<boolean> {
+    const user = <User>req.user;
     return await this.usersService.remove(user.username);
   }
 }

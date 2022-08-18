@@ -10,7 +10,7 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   private async isUnique(payload: Partial<UniquePayload>): Promise<boolean> {
     for (const key in payload) {
@@ -58,7 +58,7 @@ export class UserService {
 
   async remove(username: string): Promise<boolean> {
     await this.userRepository.delete({ username: username });
-    return true
+    return true;
   }
 
   async update(username: string, createUserDto: CreateUserDto): Promise<User> {
