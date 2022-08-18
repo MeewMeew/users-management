@@ -7,7 +7,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('User Management')
     .setDescription('API for managing users')
-    .setVersion('0.0.3')
+    .setVersion('0.0.5')
     .addTag('Auth')
     .addTag('User')
     .addTag('Admin')
