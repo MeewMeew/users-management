@@ -1,12 +1,12 @@
 import { Authorization } from 'types/auth.types';
 import { Controller, Req, Post, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from '../local';
-import { AuthService } from '../service';
+import { LocalAuthGuard } from '../local/local-auth.guard';
+import { AuthService } from '../service/auth.service';
 import { Request } from 'express';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')

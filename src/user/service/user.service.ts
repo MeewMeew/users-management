@@ -2,15 +2,15 @@ import { UniquePayload } from 'types/user.types';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../dto';
-import { User } from '../entity';
+import { User } from '../entity/user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { config } from 'src/config/app.config';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   private async isUnique(payload: Partial<UniquePayload>): Promise<boolean> {
     for (const key in payload) {

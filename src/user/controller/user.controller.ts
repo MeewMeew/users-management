@@ -1,12 +1,12 @@
-import { User } from '../entity';
-import { CreateUserDto } from '../dto';
-import { UserService } from '../service';
-import { JwtAuthGuard } from 'src/auth/local';
+import { User } from '../entity/user.entity';
+import { UserService } from '../service/user.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { JwtAuthGuard } from 'src/auth/local/jwt-auth.guard';
 import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
 
 @Controller('api/user')
 export class UserController {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly usersService: UserService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
